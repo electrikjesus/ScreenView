@@ -13,22 +13,25 @@ import android.view.ViewGroup
 class MainActivity : Activity() {
     private lateinit var view: TextureView
     private lateinit var mediaProjectionManager: MediaProjectionManager
-    private lateinit var virtualDisplay: VirtualDisplay
-    private lateinit var surface: Surface
-    private val REQUEST_MEDIA_PROJECTION = 1
+    private var virtualDisplay: VirtualDisplay? = null
+    private val request = 1
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_MEDIA_PROJECTION) {
+        if (requestCode == request) {
             if (resultCode == RESULT_OK) {
                 val mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data!!)
-                surface = Surface(view.surfaceTexture)
                 virtualDisplay = mediaProjection.createVirtualDisplay("ScreenCapture",
                     view.width, view.height, 160,
                     VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                    surface, null, null)
+                    Surface(view.surfaceTexture), null, null)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        virtualDisplay?.release()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +40,7 @@ class MainActivity : Activity() {
         view = TextureView(this)
         view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         setContentView(view)
-        startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION)
+        startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), request)
     }
 
 }
