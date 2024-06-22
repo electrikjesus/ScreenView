@@ -10,6 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.screenoverlay"
         minSdk = 25
+        //noinspection ExpiredTargetSdkVersion
         targetSdk = 25
         versionCode = 1
         versionName = "1.0"
