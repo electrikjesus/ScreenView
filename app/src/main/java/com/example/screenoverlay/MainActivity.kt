@@ -1,11 +1,13 @@
 package com.example.screenoverlay
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.Activity
 import android.content.Intent
 import android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR
 import android.hardware.display.VirtualDisplay
 import android.media.projection.MediaProjectionManager
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.Surface
 import android.view.TextureView
 import android.view.ViewGroup
@@ -43,4 +45,8 @@ class MainActivity : Activity() {
         startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), request)
     }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        Input.injectInputEvent(event)
+        return super.onTouchEvent(event)
+    }
 }
